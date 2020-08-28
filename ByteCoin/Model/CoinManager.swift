@@ -33,27 +33,25 @@ class CoinManager {
                 
                 let parseResult = self.parseJSON(exchangeData: data!)
                 
-                if let safeResult = parseResult.0 {
+                if let safeResult = parseResult {
                     self.delegate?.coinManager(self, didCalculateCurrency: currency, rate: safeResult.rate)
                     return
                 }
                 
-                if let error = parseResult.1 {
-                    self.delegate?.coinManager(self, didError: error)
-                }
             }
             
             task.resume()
         }
     }
     
-    func parseJSON(exchangeData: Data) -> (ExchangeRate?, Error?) {
+    func parseJSON(exchangeData: Data) -> ExchangeRate? {
         let decoder = JSONDecoder()
         do {
             let decoded = try decoder.decode(ExchangeRate.self, from: exchangeData)
-            return (decoded, nil)
+            return decoded
         } catch {
-            return (nil, error)
+            self.delegate?.coinManager(self, didError: error)
+            return nil
         }
     }
 }

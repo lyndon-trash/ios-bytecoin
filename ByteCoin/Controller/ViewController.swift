@@ -33,6 +33,11 @@ extension ViewController: CoinManagerDelegate {
     
     func coinManager(_ coinManager: CoinManager, didCalculateCurrency currency: Currency, rate: Money) {
         print("Exchange Rate \(currency): \(rate)")
+        
+        DispatchQueue.main.async {
+            self.currencyLabel.text = currency
+            self.bitcoinLabel.text = String(format: "%.2f", rate)
+        }
     }
     
     func coinManager(_ coinManager: CoinManager, didError error: Error) {
